@@ -1,0 +1,47 @@
+package com.company;
+
+/**
+ * Created by povishev on 20.10.2018.
+ */
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.Statement;
+
+public class dao {
+    String serverName;
+    String databaseName;
+    String userName;
+    String passWord;
+    String connectionString;
+    Connection conn;
+
+    public dao(String sName, String dbName, String uName, String pass) {
+        serverName = sName;
+        databaseName = dbName;
+        userName = uName;
+        passWord = pass;
+        connectionString = "jdbc:sqlserver://" + serverName + ";databaseName=" + databaseName;
+        try {
+            Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
+            conn = DriverManager.getConnection(connectionString,
+                    userName, passWord);
+        } catch (Exception e) {
+            //  e.printStackTrace();
+            System.out.print("error ");
+            System.out.print(e.toString());
+        }
+    }
+
+    public ResultSet Get(String queryString) {
+        ResultSet rs=null;
+        Statement statement;
+        try {
+            statement = conn.createStatement();
+            rs = statement.executeQuery(queryString);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return rs;
+    }
+}
