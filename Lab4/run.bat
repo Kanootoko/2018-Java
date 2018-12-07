@@ -1,1 +1,1 @@
-java -cp ./bin;./sqlite-jdbc-3.7.2.jar Main || pause && exit 0
+java -cp ./bin;./libs/sqlite-jdbc-3.7.2.jar Main || pause && exit 0

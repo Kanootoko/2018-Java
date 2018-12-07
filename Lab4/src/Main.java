@@ -5,12 +5,22 @@ import java.sql.ResultSetMetaData;
 //import Lab4Structs.*;
 import Utils.Utils;
 
-import BuisnessLogic.*;
+import BusinessLogic.*;
+import BusinessLogic.BLStructs.*;
 
 public class Main {
 	public static void main(String[] args) throws Exception {
-		BL lab4 = new BL();
-		lab4.showShops();
+		Shops SQLShops = new Shops();
+		Products SQLProducts = new Products();
+		Placings SQLPlacings = new Placings();
+		//SQLProducts.addProduct("БонПари мармелад, 100г");
+		// TODO SQLProducts.deleteProduct(SQLProducts.getProduct("БонПари мармелад, 100г"));
+		for (Shop shop: SQLShops.getShops())
+			System.out.println(shop);
+		for (Product product: SQLProducts.getProducts())
+			System.out.println(product);
+		for (Placing placing: SQLPlacings.getPlacings())
+			System.out.println(placing);
 		/*Lab4DAL_old db = new Lab4DAL_old("C:\\sqlite\\Lab4.db");
 		while (true) {
 			System.out.println("\n\tHelp:");
