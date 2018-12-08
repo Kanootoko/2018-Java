@@ -11,13 +11,14 @@ public class Product {
 	}
 	/*public Product(String productName) throws SQLException {
 		if (productName == null || productName.equals("null"))
-			throw new SQLException("ProductName must not be null, ID must be >= 0");
-		id = -1;
-		name = productName;
-		isComplete = false;
+			throw new SQLException("ProductName must not be null");
+		productDTO = new ProductDTO(productName); // isComplete = false
 	}*/
 	public String getName() {
 		return productDTO.getName();
+	}
+	public /* ? */ ProductDTO getDTO() {
+		return productDTO;
 	}
 	@Override
 	public String toString() {

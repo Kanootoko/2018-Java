@@ -16,16 +16,21 @@ public class ShopDAO implements DAO<ShopDTO> {
 		this.db = db;
 	}
 	public void insert(ShopDTO shopDTO) throws SQLException {
-		db.execute(String.format("INSERT INTO %s (ShopName, ShopAddress) VALUES ('%s', '%s')", tableName, shopDTO.getName(), shopDTO.getAddress()));
+		db.execute(String.format("INSERT INTO %s (ShopName, Address) VALUES ('%s', '%s')", tableName, shopDTO.getName(), shopDTO.getAddress()));
 	}
 	public void update(ShopDTO oldShop, ShopDTO newShop) throws SQLException {
-		db.execute(String.format("UPDATE %s SET ShopName = '%s', ShopAddress = '%s' where ShopID = %d", tableName, newShop.getName(), newShop.getAddress(), oldShop.getName(), oldShop.getAddress()));
+		db.execute(String.format("UPDATE %s SET ShopName = '%s', Address = '%s' where ShopID = %d", tableName, newShop.getName(), newShop.getAddress(), oldShop.getName(), oldShop.getAddress()));
 	}
 	public void delete(ShopDTO shopDTO) throws SQLException {
 		db.execute(String.format("DELETE FROM %s where ShopID = %s", tableName, shopDTO.getID()));
 	}
 	public ShopDTO getOne(SearchRequest<ShopDTO> sr) throws SQLException {
-		return new ShopDTO(db.execute(String.format("SELECT * from %s%s", tableName, sr.whereString())));
+		ResultSet rs = db.execute(String.format("SELECT * from %s%s", tableName, sr.whereString()));
+		ShopDTO result = new ShopDTO(rs);
+		try {
+			rs.close();
+		} catch (Exception ex) { }
+		return result;
 	}
 	public ShopDTO[] get(SearchRequest<ShopDTO> sr) throws SQLException {
 		ResultSet rs = db.execute(String.format("SELECT * from %s%s", tableName, sr.whereString()));

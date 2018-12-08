@@ -19,6 +19,9 @@ public class Shop {
 	public String getAddress() {
 		return shopDTO.getAddress();
 	}
+	public /* ? */ ShopDTO getDTO() {
+		return shopDTO;
+	}
 	@Override
 	public String toString() {
 		return String.format("(Shop) %s; %s", getName(), getAddress());

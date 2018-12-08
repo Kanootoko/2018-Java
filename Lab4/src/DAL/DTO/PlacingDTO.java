@@ -6,30 +6,37 @@ import java.sql.ResultSetMetaData;
 
 public class PlacingDTO implements DTO {
 	int productID, shopID, quantity, price;
-	public PlacingDTO(int productID, int shopID, int quantity, int price) throws SQLException {
+	public PlacingDTO(int shopID, int productID, int quantity, int price) throws SQLException {
 		if (price <= 0 || quantity < 0 || shopID < 0 || productID < 0)
 			throw new SQLException("price <= 0 || quantity < 0 || shopID < 0 || productID < 0");
-		this.productID = productID;
 		this.shopID = shopID;
+		this.productID = productID;
 		this.quantity = quantity;
 		this.price = price;
 	}
 	public PlacingDTO(ResultSet rs) throws SQLException {
 		ResultSetMetaData rsmd = rs.getMetaData();
-		if (rsmd.getColumnCount() != 4 || !rsmd.getColumnName(1).equals("ProductID") ||
+		/*if (rsmd.getColumnCount() != 4 || !rsmd.getColumnName(1).equals("ProductID") ||
 		    !rsmd.getColumnName(2).equals("ShopID") || !rsmd.getColumnName(3).equals("Quantity") ||
-		    !rsmd.getColumnName(4).equals("Price"))
-			throw new SQLException("Error at PlacingDTO constructor from ResultSet");
-		productID = new Integer(rs.getString(1));
-		shopID = new Integer(rs.getString(2));
-		quantity = new Integer(rs.getString(3));
-		price = new Integer(rs.getString(4));
-	}
-	public int getProductID() {
-		return productID;
+		    !rsmd.getColumnName(4).equals("Price"))*/
+		try {
+			rs.getString("ShopID");
+			rs.getString("ProductID");
+			rs.getString("Quantity");
+			rs.getString("Price");
+		} catch (Exception ex) {
+			throw new SQLException("Error at PlacingDTO constructor from ResultSet\n" + ex);
+		}
+		shopID = new Integer(rs.getString("ShopID"));
+		productID = new Integer(rs.getString("ProductID"));
+		quantity = new Integer(rs.getString("Quantity"));
+		price = new Integer(rs.getString("Price"));
 	}
 	public int getShopID() {
 		return shopID;
+	}
+	public int getProductID() {
+		return productID;
 	}
 	public int getQuantity() {
 		return quantity;

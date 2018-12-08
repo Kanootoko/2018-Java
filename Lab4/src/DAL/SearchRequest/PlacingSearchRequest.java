@@ -10,7 +10,7 @@ public class PlacingSearchRequest implements SearchRequest<PlacingDTO>{
 		quantity = null;
 		price = null;
 	}
-	public PlacingSearchRequest setPlacingID(Integer productID) {
+	public PlacingSearchRequest setProductID(Integer productID) {
 		this.productID = productID;
 		return this;
 	}
@@ -30,15 +30,22 @@ public class PlacingSearchRequest implements SearchRequest<PlacingDTO>{
 	public String whereString() {
 		if (productID == null && shopID == null && quantity == null && price == null)
 			return "";
-		String ans = "where";
-		if (productID != null)
-			ans += " ProductID = " + productID;
-		if (shopID != null)
+		boolean first = false;
+		String ans = " where";
+		if (shopID != null) {
 			ans += " ProductID = " + shopID;
-		if (quantity != null)
-			ans += " Quantity = " + quantity;
+			first = true;
+		}
+		if (productID != null) {
+			ans += (first ? " and" : "") + " ProductID = " + productID;
+			first = true;
+		}
+		if (quantity != null) {
+			ans += (first ? " and" : "") + " Quantity = " + quantity;
+			first = true;
+		}
 		if (price != null)
-			ans += " Price = " + price;
+			ans += (first ? " and" : "") + " Price = " + price;
 		return ans;
 	}
 }

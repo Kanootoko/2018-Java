@@ -23,7 +23,7 @@ public class Shops {
 		} catch (ClassNotFoundException ex) {
 			throw new BLException("Class not found");
 		} catch (Exception ex) {
-			throw new BLException("Unknown exception: " + ex);
+			throw new BLException("Unknown exception at Shops conctructor", ex);
 		}
 		shops = new ShopDAO(db);
 	}
@@ -57,5 +57,18 @@ public class Shops {
 			throw new BLException(ex);
 		}
 	}
-
+	public Shop getShop(String shopName, String shopAddress) throws BLException {
+		try {
+			return new Shop(shops.getOne(new ShopSearchRequest().setName(shopName).setAddress(shopAddress)));
+		} catch (Exception ex) {
+			throw new BLException(ex);
+		}
+	}
+	public void deleteShop(Shop shop) throws BLException {
+		try {
+			shops.delete(shop.getDTO());
+		} catch (Exception ex) {
+			throw new BLException(ex);
+		}
+	}
 }

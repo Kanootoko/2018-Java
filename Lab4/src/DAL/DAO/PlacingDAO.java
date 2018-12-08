@@ -27,7 +27,12 @@ public class PlacingDAO implements DAO<PlacingDTO> {
 		db.execute(String.format("DELETE FROM %s where ProductID = %d and ShopID = %d", tableName, placingDTO.getProductID(), placingDTO.getShopID()));
 	}
 	public PlacingDTO getOne(SearchRequest<PlacingDTO> sr) throws SQLException {
-		return new PlacingDTO(db.execute(String.format("SELECT * from %s%s", tableName, sr.whereString())));
+		ResultSet rs = db.execute(String.format("SELECT * from %s%s", tableName, sr.whereString()));
+		PlacingDTO result = new PlacingDTO(rs);
+		try {
+			rs.close();
+		} catch (Exception ex) { }
+		return result;
 	}
 	public PlacingDTO[] get(SearchRequest<PlacingDTO> sr) throws SQLException {
 		ResultSet rs = db.execute(String.format("SELECT * from %s%s", tableName, sr.whereString()));

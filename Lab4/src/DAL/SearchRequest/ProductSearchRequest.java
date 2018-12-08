@@ -13,7 +13,9 @@ public class ProductSearchRequest implements SearchRequest<ProductDTO>{
 		id = productID;
 		return this;
 	}
-	public ProductSearchRequest setName(String productName) {
+	public ProductSearchRequest setName(String productName) throws IllegalArgumentException {
+		if (productName.contains("'"))
+			throw new IllegalArgumentException("ProductName cannot contain \"'\"");
 		name = productName;
 		return this;
 	}
@@ -21,11 +23,14 @@ public class ProductSearchRequest implements SearchRequest<ProductDTO>{
 	public String whereString() {
 		if (name == null && id == null)
 			return "";
-		String ans = "where";
-		if (id != null)
+		boolean first = false;
+		String ans = " where";
+		if (id != null) {
 			ans += " ProductID = \'" + id + "\'";
+			first = true;
+		}
 		if (name != null)
-			ans += " ProductName = \'" + name + "\'";
+			ans += (first ? " and" : "") + " ProductName = \'" + name + "\'";
 		return ans;
 	}
 }

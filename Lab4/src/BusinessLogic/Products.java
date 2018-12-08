@@ -23,7 +23,7 @@ public class Products {
 		} catch (ClassNotFoundException ex) {
 			throw new BLException("Class not found");
 		} catch (Exception ex) {
-			throw new BLException("Unknown exception: " + ex);
+			throw new BLException("Unknown exception at Products constructor", ex);
 		}
 		products = new ProductDAO(db);
 		
@@ -54,7 +54,21 @@ public class Products {
 	public void addProduct(String productName) throws BLException {
 		try {
 			products.insert(new ProductDTO(productName));
-		} catch(Exception ex) {
+		} catch (Exception ex) {
+			throw new BLException(ex);
+		}
+	}
+	public Product getProduct(String productName) throws BLException {
+		try {
+			return new Product(products.getOne(new ProductSearchRequest().setName(productName)));
+		} catch (Exception ex) {
+			throw new BLException(ex);
+		}
+	}
+	public void deleteProduct(Product product) throws BLException {
+		try {
+			products.delete(product.getDTO());
+		} catch (Exception ex) {
 			throw new BLException(ex);
 		}
 	}

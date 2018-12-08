@@ -48,6 +48,9 @@ public class Placing {
 		placingDTO.setQuantity(newPrice);
 		return this;
 	}
+	public /* ? */ PlacingDTO getDTO() {
+		return placingDTO;
+	}
 	@Override
 	public String toString() {
 		return String.format("(Placing) Product [%s] at place [%s], %d pieces with price %d", product, shop, getQuantity(), getPrice());

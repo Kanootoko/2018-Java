@@ -14,11 +14,15 @@ public class ShopSearchRequest implements SearchRequest<ShopDTO>{
 		id = shopID;
 		return this;
 	}
-	public ShopSearchRequest setName(String shopName) {
+	public ShopSearchRequest setName(String shopName) throws IllegalArgumentException {
+		if (shopName.contains("'"))
+			throw new IllegalArgumentException("ProductName cannot contain \"'\"");
 		name = shopName;
 		return this;
 	}
-	public ShopSearchRequest setAddress(String shopAddress) {
+	public ShopSearchRequest setAddress(String shopAddress) throws IllegalArgumentException {
+		if (shopAddress.contains("'"))
+			throw new IllegalArgumentException("ProductName cannot contain \"'\"");
 		address = shopAddress;
 		return this;
 	}
@@ -26,13 +30,18 @@ public class ShopSearchRequest implements SearchRequest<ShopDTO>{
 	public String whereString() {
 		if (name == null && address == null && id == null)
 			return "";
-		String ans = "where";
-		if (id != null)
+		boolean first = false;
+		String ans = " where";
+		if (id != null) {
 			ans += " ShopID = \'" + id + "\'";
-		if (name != null)
-			ans += " ShopName = \'" + name + "\'";
+			first = true;
+		}
+		if (name != null) {
+			ans += (first ? " and" : "") + " ShopName = \'" + name + "\'";
+			first = true;
+		}
 		if (address != null)
-			ans += " Address = \'" + address + "\'";
+			ans += (first ? " and" : "") + " Address = \'" + address + "\'";
 		return ans;
 	}
 }

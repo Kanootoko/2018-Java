@@ -25,7 +25,12 @@ public class ProductDAO implements DAO<ProductDTO> {
 		db.execute(String.format("DELETE FROM %s where ProductID = %s", tableName, productDTO.getID()));
 	}
 	public ProductDTO getOne(SearchRequest<ProductDTO> sr) throws SQLException {
-		return new ProductDTO(db.execute(String.format("SELECT * from %s%s", tableName, sr.whereString())));
+		ResultSet rs = db.execute(String.format("SELECT * from %s%s", tableName, sr.whereString()));
+		ProductDTO result = new ProductDTO(rs);
+		try {
+			rs.close();
+		} catch (Exception ex) { }
+		return result;
 	}
 	public ProductDTO[] get(SearchRequest<ProductDTO> sr) throws SQLException {
 		ResultSet rs = db.execute(String.format("SELECT * from %s%s", tableName, sr.whereString()));
