@@ -34,7 +34,9 @@ public class ProductDTO implements DTO {
 			rs.getString("ProductID");
 			rs.getString("ProductName");
 		} catch (Exception ex) {
-			throw new SQLException("Error at ProductDTO constructor from ResultSet\n" + ex);
+			if (ex.getMessage().equals("ResultSet closed"))
+				throw ex;
+			throw new SQLException("Error at ProductDTO constructor from ResultSet\n", ex);
 		}
 		id = new Integer(rs.getString("ProductID"));
 		name = rs.getString("ProductName");

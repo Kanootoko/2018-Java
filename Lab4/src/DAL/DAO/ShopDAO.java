@@ -26,7 +26,15 @@ public class ShopDAO implements DAO<ShopDTO> {
 	}
 	public ShopDTO getOne(SearchRequest<ShopDTO> sr) throws SQLException {
 		ResultSet rs = db.execute(String.format("SELECT * from %s%s", tableName, sr.whereString()));
-		ShopDTO result = new ShopDTO(rs);
+		ShopDTO result;
+		try {
+			result = new ShopDTO(rs);
+		} catch (SQLException ex) {
+			if (ex.getMessage().equals("ResultSet closed"))
+				throw new SQLException("SELECT is empty");
+			else
+				throw ex;
+		}
 		try {
 			rs.close();
 		} catch (Exception ex) { }

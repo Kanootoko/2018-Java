@@ -44,4 +44,10 @@ public class ShopSearchRequest implements SearchRequest<ShopDTO>{
 			ans += (first ? " and" : "") + " Address = \'" + address + "\'";
 		return ans;
 	}
+	@Override
+	public String toString() {
+		if (name == null && address == null && id == null)
+			return "(empty ShopSearchRequest)";
+		return whereString().substring(7);
+	}
 }

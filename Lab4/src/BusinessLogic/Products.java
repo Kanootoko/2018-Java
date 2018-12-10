@@ -35,6 +35,8 @@ public class Products {
 		try {
 			return new Product(products.getOne(sr));
 		} catch (SQLException ex) {
+			if (ex.getMessage().equals("SELECT is empty"))
+				throw new BLException("No such product: " + sr);
 			throw new BLException(ex);
 		}
 	}
@@ -61,6 +63,10 @@ public class Products {
 	public Product getProduct(String productName) throws BLException {
 		try {
 			return new Product(products.getOne(new ProductSearchRequest().setName(productName)));
+		} catch (SQLException ex) {
+			if (ex.getMessage().equals("SELECT is empty"))
+				throw new BLException("No such product: " + productName);
+			throw new BLException(ex);
 		} catch (Exception ex) {
 			throw new BLException(ex);
 		}

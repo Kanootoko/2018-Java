@@ -25,7 +25,9 @@ public class PlacingDTO implements DTO {
 			rs.getString("Quantity");
 			rs.getString("Price");
 		} catch (Exception ex) {
-			throw new SQLException("Error at PlacingDTO constructor from ResultSet\n" + ex);
+			if (ex.getMessage().equals("ResultSet closed"))
+				throw ex;
+			throw new SQLException("Error at PlacingDTO constructor from ResultSet\n", ex);
 		}
 		shopID = new Integer(rs.getString("ShopID"));
 		productID = new Integer(rs.getString("ProductID"));

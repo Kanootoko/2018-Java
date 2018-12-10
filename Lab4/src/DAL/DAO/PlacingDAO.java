@@ -28,7 +28,15 @@ public class PlacingDAO implements DAO<PlacingDTO> {
 	}
 	public PlacingDTO getOne(SearchRequest<PlacingDTO> sr) throws SQLException {
 		ResultSet rs = db.execute(String.format("SELECT * from %s%s", tableName, sr.whereString()));
-		PlacingDTO result = new PlacingDTO(rs);
+		PlacingDTO result;
+		try {
+			result = new PlacingDTO(rs);
+		} catch (SQLException ex) {
+			if (ex.getMessage().equals("ResultSet closed"))
+				throw new SQLException("SELECT is empty");
+			else
+				throw ex;
+		}
 		try {
 			rs.close();
 		} catch (Exception ex) { }

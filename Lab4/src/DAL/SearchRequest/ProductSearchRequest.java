@@ -33,4 +33,10 @@ public class ProductSearchRequest implements SearchRequest<ProductDTO>{
 			ans += (first ? " and" : "") + " ProductName = \'" + name + "\'";
 		return ans;
 	}
+	@Override
+	public String toString() {
+		if (name == null && id == null)
+			return "(empty ProductSearchRequest)";
+		return whereString().substring(7);
+	}
 }

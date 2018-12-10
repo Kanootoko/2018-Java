@@ -34,6 +34,8 @@ public class Shops {
 		try {
 			return new Shop(shops.getOne(sr));
 		} catch (SQLException ex) {
+			if (ex.getMessage().equals("SELECT is empty"))
+				throw new BLException("No such shop: " + sr);
 			throw new BLException(ex);
 		}
 	}
@@ -60,6 +62,10 @@ public class Shops {
 	public Shop getShop(String shopName, String shopAddress) throws BLException {
 		try {
 			return new Shop(shops.getOne(new ShopSearchRequest().setName(shopName).setAddress(shopAddress)));
+		} catch (SQLException ex) {
+			if (ex.getMessage().equals("SELECT is empty"))
+				throw new BLException("No such shop: (" + shopName + ", " + shopAddress + ")");
+			throw new BLException(ex);
 		} catch (Exception ex) {
 			throw new BLException(ex);
 		}

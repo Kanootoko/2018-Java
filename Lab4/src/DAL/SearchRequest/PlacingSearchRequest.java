@@ -48,4 +48,10 @@ public class PlacingSearchRequest implements SearchRequest<PlacingDTO>{
 			ans += (first ? " and" : "") + " Price = " + price;
 		return ans;
 	}
+	@Override
+	public String toString() {
+		if (productID == null && shopID == null && quantity == null && price == null)
+			return "(empty PlacingSearchRequest)";
+		return whereString().substring(7);
+	}
 }

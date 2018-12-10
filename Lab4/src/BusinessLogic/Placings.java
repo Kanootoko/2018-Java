@@ -71,6 +71,10 @@ public class Placings {
 			throw new BLException("No placing can exist with shop == null or product == null");
 		try {
 			return new Placing(placings.getOne(new PlacingSearchRequest().setShopID(shop.getDTO().getID()).setProductID(product.getDTO().getID())), product, shop);
+		} catch (SQLException ex) {
+			if (ex.getMessage().equals("SELECT is empty"))
+				throw new BLException("No such placing: (" + shop + ", " + product + ")");
+			throw new BLException(ex);
 		} catch (Exception ex) {
 			throw new BLException(ex);
 		}

@@ -26,7 +26,15 @@ public class ProductDAO implements DAO<ProductDTO> {
 	}
 	public ProductDTO getOne(SearchRequest<ProductDTO> sr) throws SQLException {
 		ResultSet rs = db.execute(String.format("SELECT * from %s%s", tableName, sr.whereString()));
-		ProductDTO result = new ProductDTO(rs);
+		ProductDTO result;
+		try {
+			result = new ProductDTO(rs);
+		} catch (SQLException ex) {
+			if (ex.getMessage().equals("ResultSet closed"))
+				throw new SQLException("SELECT is empty");
+			else
+				throw ex;
+		}
 		try {
 			rs.close();
 		} catch (Exception ex) { }

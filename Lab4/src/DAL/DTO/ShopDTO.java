@@ -36,8 +36,10 @@ public class ShopDTO implements DTO {
 			rs.getString("ShopID");
 			rs.getString("ShopName");
 			rs.getString("Address");
-		} catch (Exception ex) {
-			throw new SQLException("Error at ShopDTO constructor from ResultSet\n" + ex);
+		} catch (SQLException ex) {
+			if (ex.getMessage().equals("ResultSet closed"))
+				throw ex;
+			throw new SQLException("Error at ShopDTO constructor from ResultSet\n", ex);
 		}
 		id = new Integer(rs.getString("ShopID"));
 		name = rs.getString("ShopName");

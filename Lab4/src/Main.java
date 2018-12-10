@@ -20,12 +20,6 @@ public class Main {
 		//SQLPlacings.addPlacing(SQLShops.getShop("Карусель", "Ленинский проспект, дом 100, корпус 1"), SQLProducts.getProduct("Coca-Cola 0.5л"), 30, 90);
 		//SQLPlacings.addPlacing(SQLShops.getShops()[1], SQLProducts.getProducts()[2], 200, 60);
 		//SQLPlacings.deletePlacing(SQLPlacings.getPlacings()[SQLPlacings.getPlacings().length - 1]);
-		for (Shop shop: SQLShops.getShops())
-			System.out.println(shop);
-		for (Product product: SQLProducts.getProducts())
-			System.out.println(product);
-		for (Placing placing: SQLPlacings.getPlacings())
-			System.out.println(placing);
 		while (true) {
 			try {
 			System.out.println("\n\tHelp:");
