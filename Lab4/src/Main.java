@@ -13,6 +13,7 @@ public class Main {
 		Shops SQLShops = new Shops();
 		Products SQLProducts = new Products();
 		Placings SQLPlacings = new Placings();
+		boolean showHelp = true;
 		//SQLProducts.addProduct("БонПари мармелад, 100г");
 		//SQLProducts.deleteProduct(SQLProducts.getProduct("БонПари мармелад, 100г"));
 		//SQLShops.addShop("ShopName-test", "ShopAddress-test");
@@ -22,22 +23,29 @@ public class Main {
 		//SQLPlacings.deletePlacing(SQLPlacings.getPlacings()[SQLPlacings.getPlacings().length - 1]);
 		while (true) {
 			try {
-			System.out.println("\n\tHelp:");
-			System.out.println("\"add shop <ShopName> <Address>\" - add shop to database");
-			System.out.println("\"add product <ProductName>\" - add product to database");
-			System.out.println("\"add placing <ProductName> <ShopName> <ShopAddress> <Quantity> <Price>\" - export (set quantity and proce) product to shop");
-			System.out.println("\"add placing <ProductNumber> <ShopNumber> <Quantity> <Price>\" - export (set quantity and proce) product to shop");
-			System.out.println();
-			System.out.println("\"delete shop <ShopName> <ShopAddress>\" - delete shop from database");
-			System.out.println("\"delete product <ProductName>\" - delete product from database");
-			System.out.println("\"delete placing <ProductName> <ShopName> <ShopAddress>\" - delete placing from database");
-			System.out.println("\"delete shop <ShopNumber>\" - delete shop from database by number");
-			System.out.println("\"delete product number <ProductNumber>\" - delete product from database by number");
-			System.out.println("\"delete placing <PlacingNumber>\" - delete placing from database by number");
-			System.out.println();
-			System.out.println("\"show shops\" - prints all shops in database");
-			System.out.println("\"show products\" - prints all products in database");
-			System.out.println("\"show placings\" - prints all placings in database");
+			if (showHelp) {
+				System.out.println("\n\tHelp:");
+				System.out.println("\"add shop <ShopName> <Address>\" - add shop to database");
+				System.out.println("\"add product <ProductName>\" - add product to database");
+				System.out.println("\"add placing <ProductName> <ShopName> <ShopAddress> <Quantity> <Price>\" - export (set quantity and proce) product to shop");
+				System.out.println("\"add placing <ProductNumber> <ShopNumber> <Quantity> <Price>\" - export (set quantity and proce) product to shop");
+				System.out.println();
+				System.out.println("\"delete shop <ShopName> <ShopAddress>\" - delete shop from database");
+				System.out.println("\"delete product <ProductName>\" - delete product from database");
+				System.out.println("\"delete placing <ProductName> <ShopName> <ShopAddress>\" - delete placing from database");
+				System.out.println("\"delete shop <ShopNumber>\" - delete shop from database by number");
+				System.out.println("\"delete product number <ProductNumber>\" - delete product from database by number");
+				System.out.println("\"delete placing <PlacingNumber>\" - delete placing from database by number");
+				System.out.println();
+				System.out.println("\"show shops\" - prints all shops in database");
+				System.out.println("\"show products\" - prints all products in database");
+				System.out.println("\"show placings\" - prints all placings in database");
+				System.out.println();
+				System.out.println("\"set price <price> <placingNumber>\" - set price for product at shop by placing number");
+				System.out.println("\"set price <price> <productName> <shopName>\" - set price for product at shop");
+				System.out.println("\"set quantity <price> <placingNumber>\" - set quantity for product at shop by placing number");
+				System.out.println("\"set quantity <price> <productName> <shopName>\" - set quantity for product at shop");
+			}
 			System.out.print(">>> ");
 			String[] command = Utils.parseQuotes(System.console().readLine());
 			if (command.length > 0 && (command[0].equals("quit") || command[0].equals("exit")))
@@ -135,8 +143,70 @@ public class Main {
 					for (int i = 0; i < placings.length; ++i)
 						System.out.println(String.format("%3d: %s", i, placings[i]));
 				} else {
-					System.out.println(String.format("Error with showing. Full command: \"%s\"", String.join("; ", command)));
+					throw new IllegalArgumentException(String.format("Unknown parameter to (show) command. Full line: \"%s\"", String.join("; ", command)));
 				}
+			} else if (command.length > 0 && command[0].equals("set")) {
+				if (command.length > 1 && command[1].equals("price")) {
+					if (command.length == 4) {
+						try {
+							SQLPlacings.setPrice(SQLPlacings.getPlacings()[new Integer(command[3])], new Integer(command[2]));
+							System.out.println("Price was set successfully");
+						} catch (NumberFormatException ex) {
+							throw new IllegalArgumentException("Price and placing number must be integer", ex);
+						} catch (IndexOutOfBoundsException ex) {
+							throw new IllegalArgumentException("Placing number is out of bounds", ex);
+						}
+					} else if (command.length == 6) {
+						try {
+							SQLPlacings.setPrice(SQLPlacings.getPlacing(SQLProducts.getProduct(command[3]),
+							                                            SQLShops.getShop(command[4], command[5])
+							                                           ),
+							                  new Integer(command[2])
+							                 );
+							System.out.println("Price was set successfully");
+						} catch (NumberFormatException ex) {
+							throw new IllegalArgumentException("Price must be integer", ex);
+						}
+					} else
+						throw new IllegalArgumentException("Error with (set price) command: " +
+						                                   "you need to use price+((productName+shopName+shopAddress) or (placingNumber))"
+						                                  );
+				} else if (command.length > 1 && command[1].equals("quantity")) {
+					if (command.length == 4) {
+						try {
+							SQLPlacings.setQuantity(SQLPlacings.getPlacings()[new Integer(command[3])], new Integer(command[2]));
+							System.out.println("Quantity was set successfully");
+						} catch (NumberFormatException ex) {
+							throw new IllegalArgumentException("Quantity and placing number must be integer", ex);
+						} catch (IndexOutOfBoundsException ex) {
+							throw new IllegalArgumentException("Placing number is out of bounds", ex);
+						}
+					} else if (command.length == 5) {
+						try {
+							SQLPlacings.setQuantity(SQLPlacings.getPlacing(SQLProducts.getProduct(command[3]),
+							                                                SQLShops.getShop(command[4], command[5])
+							                                               ),
+							                     new Integer(command[2])
+							                    );
+							System.out.println("Quantity was set successfully");
+						} catch (NumberFormatException ex) {
+							throw new IllegalArgumentException("Quantity must be integer", ex);
+						}
+					} else
+						throw new IllegalArgumentException("Error with (set price) command: " +
+						                                   "you need to use price+((productName+shopName+shopAddress) or (placingNumber))"
+						                                  );
+				} else
+					throw new IllegalArgumentException(String.format("Unknown parameter to (set) command. Full line: \"%s\"", String.join("; ", command)));
+			} else if (command.length > 0 && command[0].equals("help")) {
+				if (command.length > 1 && command[1].equals("on")) {
+					showHelp = true;
+					System.out.println("Help if turned on. Command \"help on\" to turn it off");
+				} else if (command.length > 1 && command[1].equals("off")) {
+					showHelp = false;
+					System.out.println("Help if turned off. Command \"help on\" to turn it on again");
+				} else
+					throw new IllegalArgumentException("Ugage of (help): \"help on\" to turn help on, \"help off\" to turn it off");
 			} else {
 				System.out.println(String.format("Unknown command, splitted: \"%s\"", String.join("; ", command)));
 			}

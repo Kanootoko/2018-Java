@@ -6,13 +6,24 @@ import java.sql.ResultSetMetaData;
 
 public class PlacingDTO implements DTO {
 	int productID, shopID, quantity, price;
-	public PlacingDTO(int shopID, int productID, int quantity, int price) throws SQLException {
+	boolean isComplete;
+	public /* ? */ PlacingDTO(int shopID, int productID, int quantity, int price) throws SQLException {
 		if (price <= 0 || quantity < 0 || shopID < 0 || productID < 0)
 			throw new SQLException("price <= 0 || quantity < 0 || shopID < 0 || productID < 0");
 		this.shopID = shopID;
 		this.productID = productID;
 		this.quantity = quantity;
 		this.price = price;
+		this.isComplete = true;
+	}
+	public PlacingDTO(int quantity, int price) throws SQLException {
+		if (price <= 0 || quantity < 0)
+			throw new SQLException("Price must be >0, quantity must be >= 0");
+		this.productID = -1;
+		this.shopID = -1;
+		this.price = price;
+		this.quantity = quantity;
+		this.isComplete = false;
 	}
 	public PlacingDTO(ResultSet rs) throws SQLException {
 		ResultSetMetaData rsmd = rs.getMetaData();
@@ -45,6 +56,9 @@ public class PlacingDTO implements DTO {
 	}
 	public int getPrice() {
 		return price;
+	}
+	public boolean isComplete() {
+		return this.isComplete;
 	}
 	public PlacingDTO setQuantity(int newQuantity) {
 		quantity = newQuantity;

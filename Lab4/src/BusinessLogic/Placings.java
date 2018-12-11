@@ -89,4 +89,18 @@ public class Placings {
 			throw new BLException(ex);
 		}
 	}
+	public void setPrice(Placing placing, int price) throws BLException {
+		try {
+			placings.update(placing.getDTO(), new PlacingDTO(placing.getQuantity(), price));
+		} catch (Exception ex) {
+			throw new BLException(ex);
+		}
+	}
+	public void setQuantity(Placing placing, int quantity) throws BLException {
+		try {
+			placings.update(placing.getDTO(), new PlacingDTO(quantity, placing.getPrice()));
+		} catch (Exception ex) {
+			throw new BLException(ex);
+		}
+	}
 }
