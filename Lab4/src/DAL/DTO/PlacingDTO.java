@@ -3,6 +3,8 @@ package DAL.DTO;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import DAL.CSVFile.CSVFile;
+import DAL.CSVFile.CSVException;
 
 public class PlacingDTO implements DTO {
 	int productID, shopID, quantity, price;
@@ -26,10 +28,6 @@ public class PlacingDTO implements DTO {
 		this.isComplete = false;
 	}
 	public PlacingDTO(ResultSet rs) throws SQLException {
-		ResultSetMetaData rsmd = rs.getMetaData();
-		/*if (rsmd.getColumnCount() != 4 || !rsmd.getColumnName(1).equals("ProductID") ||
-		    !rsmd.getColumnName(2).equals("ShopID") || !rsmd.getColumnName(3).equals("Quantity") ||
-		    !rsmd.getColumnName(4).equals("Price"))*/
 		try {
 			rs.getString("ShopID");
 			rs.getString("ProductID");
@@ -44,6 +42,18 @@ public class PlacingDTO implements DTO {
 		productID = new Integer(rs.getString("ProductID"));
 		quantity = new Integer(rs.getString("Quantity"));
 		price = new Integer(rs.getString("Price"));
+	}
+	public PlacingDTO(CSVFile csv) throws CSVException {
+		if (csv.getColumns() != 4)
+			throw new CSVException("Error at PlacingDTO constructor from CSVParser: number of columns != 4");
+		try {
+			shopID = new Integer(csv.getString(1));
+			productID = new Integer(csv.getString(2));
+			quantity = new Integer(csv.getString(3));
+			price = new Integer(csv.getString(4));
+		} catch (NumberFormatException ex) {
+			throw new CSVException("Bad CSV file: one of the columns (shopID, productID, quantity, price) cannot be cast to Integer");
+		}
 	}
 	public int getShopID() {
 		return shopID;

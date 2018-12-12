@@ -3,6 +3,8 @@ package DAL.DTO;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import DAL.CSVFile.CSVFile;
+import DAL.CSVFile.CSVException;
 
 public class ProductDTO implements DTO {
 	private int id;
@@ -20,16 +22,13 @@ public class ProductDTO implements DTO {
 	public ProductDTO(String productName) throws SQLException {
 		if (productName == null || productName.equals("null"))
 			throw new SQLException("ProductName must not be null, ID must be >= 0");
-		if (productName.contains("'"))
-			throw new SQLException("ProductName cannot contain \"'\"");
+		if (productName.contains("'") || productName.contains("\""))
+			throw new SQLException("ProductName cannot contain quotes");
 		id = -1;
 		name = productName;
 		isComplete = false;
 	}
 	public ProductDTO(ResultSet rs) throws SQLException {
-		ResultSetMetaData rsmd = rs.getMetaData();
-		/*if (rsmd.getColumnCount() != 2 || !rsmd.getColumnName(1).equals("ProductID") ||
-		    !rsmd.getColumnName(2).equals("ProductName"))*/
 		try {
 			rs.getString("ProductID");
 			rs.getString("ProductName");
@@ -41,6 +40,16 @@ public class ProductDTO implements DTO {
 		id = new Integer(rs.getString("ProductID"));
 		name = rs.getString("ProductName");
 		isComplete = true;
+	}
+	public ProductDTO(CSVFile csv) throws CSVException {
+		if (csv.getColumns() != 2)
+			throw new CSVException("Error at ProductDTO constructor from CSVParser: number of columns != 2");
+		try {
+			id = new Integer(csv.getString(1));
+			name = csv.getString(2);
+		} catch (NumberFormatException ex) {
+			throw new CSVException("Bad CSV file: one of the columns (productID) cannot be cast to Integer");
+		}
 	}
 	public int getID() {
 		return id;

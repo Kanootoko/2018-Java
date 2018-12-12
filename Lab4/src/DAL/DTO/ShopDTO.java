@@ -3,6 +3,8 @@ package DAL.DTO;
 import java.sql.SQLException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import DAL.CSVFile.CSVFile;
+import DAL.CSVFile.CSVException;
 
 public class ShopDTO implements DTO {
 	private int id;
@@ -21,17 +23,14 @@ public class ShopDTO implements DTO {
 	public ShopDTO(String shopName, String shopAddress) throws SQLException {
 		if (shopName == null || shopAddress == null || shopName.equals("null") || shopAddress.equals("null"))
 			throw new SQLException("ShopName and ShopAddress must not be null, ID must be >= 0");
-		if (shopName.contains("'") || shopAddress.contains("'"))
-			throw new SQLException("ShopName and ShopAddress cannot contain \"'\"");
+		if (shopName.contains("'") || shopAddress.contains("'") || shopName.contains("\"") || shopAddress.contains("\""))
+			throw new SQLException("ShopName and ShopAddress cannot contain quotes");
 		id = -1;
 		name = shopName;
 		address = shopAddress;
 		isComplete = false;
 	}
 	public ShopDTO(ResultSet rs) throws SQLException {
-		ResultSetMetaData rsmd = rs.getMetaData();
-		/*if (rsmd.getColumnCount() != 3 || !rsmd.getColumnName(1).equals("ShopID") ||
-		    !rsmd.getColumnName(2).equals("ShopName") || !rsmd.getColumnName(3).equals("Address"))*/
 		try {
 			rs.getString("ShopID");
 			rs.getString("ShopName");
@@ -45,6 +44,16 @@ public class ShopDTO implements DTO {
 		name = rs.getString("ShopName");
 		address = rs.getString("Address");
 		isComplete = true;
+	}
+	public ShopDTO(CSVFile csv) throws CSVException {
+		if (csv.getColumns() != 2)
+			throw new CSVException("Error at ShopDTO constructor from CSVParser: number of columns != 2");
+		try {
+			id = new Integer(csv.getString(1));
+			name = csv.getString(2);
+		} catch (NumberFormatException ex) {
+			throw new CSVException("Bad CSV file: one of the columns (shopID) cannot be cast to Integer");
+		}
 	}
 	public int getID() {
 		return id;
