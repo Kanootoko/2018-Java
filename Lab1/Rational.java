@@ -69,4 +69,7 @@ public class Rational {
 			throw ex;
 		}
 	}
+	public Rational inverse() {
+		return new Rational(this.n_, this.m_);
+	}
 }
