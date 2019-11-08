@@ -69,7 +69,20 @@ public class Rational {
 			throw ex;
 		}
 	}
+	
 	public Rational inverse() {
 		return new Rational(this.n_, this.m_);
 	}
+
+	public Rational simplify() {
+        long limit = Math.min(this.m_, this.n_);
+ 
+        for (long i = 2; i <= limit; i++) {
+            if (this.m_ % i == 0 && this.n_ % i == 0) {
+                this.m_ /= i;
+                this.n_ /= i;
+            }
+        }
+        return this;
+    }
 }
