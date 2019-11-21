@@ -75,14 +75,9 @@ public class Rational {
 	}
 
 	public Rational simplify() {
-        long limit = Math.min(this.m_, this.n_);
- 
-        for (long i = 2; i <= limit; i++) {
-            if (this.m_ % i == 0 && this.n_ % i == 0) {
-                this.m_ /= i;
-                this.n_ /= i;
-            }
-        }
+        int gcd = Utility.GCD(m_, n_);
+        m_ /= gcd;
+        n_ /= gcd;
         return this;
     }
 }
