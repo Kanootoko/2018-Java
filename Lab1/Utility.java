@@ -10,5 +10,9 @@ public class Utility {
             a = t;
         }
         return a;
+	}
+	
+    public static int LCM(int a, int b){
+        return a * b / GCD(a, b);
     }
 }
